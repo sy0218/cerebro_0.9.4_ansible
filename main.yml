@@ -1,0 +1,4 @@
+cerebro_zip_path: "/data/download_tar"
+cerebro_zip_filename: "cerebro-0.9.4.zip"
+work_dir: "/data/sy0218"
+play_book_dir: "/data/work/cerebro_0.9.4_ansible"

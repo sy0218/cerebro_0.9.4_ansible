@@ -1,0 +1,51 @@
+---
+- name: Create cerebro_tar directory
+  hosts: servers
+  become: yes
+  vars_files:
+    - /data/work/cerebro_0.9.4_ansible/main.yml
+  tasks:
+    - name: Create cerebro_zip directory
+      file:
+        path: "{{ cerebro_zip_path }}"
+        state: directory
+
+    - name: Create work directory
+      file:
+        path: "{{ work_dir }}"
+        state: directory
+
+
+- name: Copy cerebro_zip to servers
+  hosts: localhost
+  become: yes
+  vars_files:
+    - /data/work/cerebro_0.9.4_ansible/main.yml
+  tasks:
+    - name: tar_scp.sh Start
+      shell: "{{ play_book_dir }}/tar_scp.sh {{ play_book_dir }} {{ cerebro_zip_path }}"
+
+
+- name: Extract cerebro_zip
+  hosts: servers
+  become: yes
+  vars_files:
+    - /data/work/cerebro_0.9.4_ansible/main.yml
+  tasks:
+    - name: Extract the cerebro zipball
+      unarchive:
+        src: "{{ cerebro_zip_path }}/{{ cerebro_zip_filename }}"
+        dest: "{{ work_dir }}"
+        remote_src: yes
+
+
+- name: sb_link
+  hosts: servers
+  become: yes
+  vars_files:
+    - /data/work/cerebro_0.9.4_ansible/main.yml
+  tasks:
+    - name: cerebro link gogo
+      shell: "ln -s {{ work_dir }}/*cerebro-?.?.?* {{ work_dir }}/cerebro"
+      args:
+        creates: "{{ work_dir }}/cerebro"
